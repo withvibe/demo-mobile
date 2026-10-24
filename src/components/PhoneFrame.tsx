@@ -7,7 +7,14 @@ import { Platform, StyleSheet, Text, View } from "react-native";
  * it renders children directly — the real device is the frame.
  */
 export function PhoneFrame({ children }: { children: React.ReactNode }) {
-  if (Platform.OS !== "web") {
+  // Native app: the real device is the frame. Embedded (e.g. inside the
+  // WithVibe mobile simulator view): the embedder draws the device chrome.
+  const embedded =
+    Platform.OS === "web" &&
+    typeof window !== "undefined" &&
+    window.self !== window.top;
+
+  if (Platform.OS !== "web" || embedded) {
     return <>{children}</>;
   }
 
