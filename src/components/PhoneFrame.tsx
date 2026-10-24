@@ -14,8 +14,14 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
     typeof window !== "undefined" &&
     window.self !== window.top;
 
-  if (Platform.OS !== "web" || embedded) {
+  if (Platform.OS !== "web") {
     return <>{children}</>;
+  }
+
+  if (embedded) {
+    // The embedder draws the device chrome; reserve the status-bar inset so
+    // content doesn't sit under its notch.
+    return <View style={styles.embedded}>{children}</View>;
   }
 
   return (
@@ -37,6 +43,7 @@ export function PhoneFrame({ children }: { children: React.ReactNode }) {
 }
 
 const styles = StyleSheet.create({
+  embedded: { flex: 1, paddingTop: 44, backgroundColor: "#F6F7F9" },
   stage: {
     flex: 1,
     minHeight: "100%" as unknown as number,
